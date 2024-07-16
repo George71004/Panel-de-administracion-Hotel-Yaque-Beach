@@ -17,7 +17,10 @@ $clave = $_POST['clave'] ?? '';
 // Preparar la consulta SQL
 mysqli_query($conn, "INSERT INTO usuario (cedula, email, clave) VALUES ('$cedula', '$email', '$clave')");
 
-mysqli_query($conn, "INSERT INTO persona (cedula, nombre, apellido, email, telefono) VALUES ('$cedula', '$nombre', '$apellido', '$email', '$telefono')");
+mysqli_query($conn, "INSERT INTO persona (cedula, nombre, apellido, telefono) VALUES ('$cedula', '$nombre', '$apellido', '$telefono')");
+
+
+header("Location: usuarios.php");
 
 // Cerrar conexión
 $conn->close();

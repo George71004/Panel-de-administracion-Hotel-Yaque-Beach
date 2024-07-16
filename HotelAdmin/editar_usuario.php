@@ -14,7 +14,7 @@ if (isset($_POST['id']) && isset($_POST['cedula']) && isset($_POST['nombre']) &&
     $email = $_POST['email'];
     $telefono = $_POST['telefono'];
 
-    // Consulta para actualizar el usuario
+    // Consulta para actualizar la persona
     $sql = "UPDATE persona SET cedula='$cedula', nombre='$nombre', apellido='$apellido', email='$email', telefono='$telefono' WHERE cedula='$id'";
 
     if ($conn->query($sql) === TRUE) {

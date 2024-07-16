@@ -1,5 +1,5 @@
 <?php
-
+//ESTE ARCHIVO SERA UTILIZADO COMO LA TABLA DE PERSONAS
 $conn = mysqli_connect('localhost', 'root', '', 'hotel_yaquebeach');
 
 // Verificar conexión
@@ -81,28 +81,36 @@ $resultado = $conn->query($consulta);
             width: 100%;
             padding: 20px;
         }
+        .table-actions {
+            width: 100px; /* Ajusta el ancho según sea necesario */
+            text-align: center;
+        }
+        .btn-action {
+            margin-bottom: 5px; /* Ajusta el margen derecho según sea necesario */
+        }
     </style>
 </head>
 <body>
     <div id="sidebar">
         <h3>Menú</h3>
         <ul class="list-unstyled">
-            <li><a href="usuarios.php"><i class="fas fa-users"></i> <span>Usuarios registrados</span></a></li>
+            <li><a href="usuarios.php"><i class="fas fa-users"></i> <span>Personas</span></a></li>
             <li><a href="habitaciones.php"><i class="fas fa-bed"></i> <span>Habitaciones</span></a></li>
+            <li><a href="personas.php"><i class="fas fa-user"></i> <span>Usuarios</span></a></li>
+            <li><a href="categorias.php"><i class="fas fa-list"></i> <span>Categorías</span></a></li>
         </ul>
     </div>
 
     <div id="content">
         <div class="container mt-5">
-            <h1>Administrar Usuarios</h1>
-            <button class="btn btn-primary my-3" data-toggle="modal" data-target="#createUserModal">Crear Usuario</button>
+            <h1>Administrar Personas</h1>
+            <button class="btn btn-primary my-3" data-toggle="modal" data-target="#createUserModal">Crear Persona</button>
             <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th>Cédula</th>
                         <th>Nombre</th>
                         <th>Apellido</th>
-                        <th>Email</th>
                         <th>Teléfono</th>
                         <th>Acciones</th>
                     </tr>
@@ -117,16 +125,15 @@ $resultado = $conn->query($consulta);
                                     <td>" . $row["cedula"] . "</td>
                                     <td>" . $row["nombre"] . "</td>
                                     <td>" . $row["apellido"] . "</td>
-                                    <td>" . $row["email"] . "</td>
                                     <td>" . $row["telefono"] . "</td>
-                                    <td>
-                                        <button class='btn btn-primary btn-sm edit-btn' data-toggle='modal' data-target='#editUserModal' data-id='" . $row['cedula'] . "' data-nombre='" . $row['nombre'] . "' data-apellido='" . $row['apellido'] . "' data-email='" . $row['email'] . "' data-telefono='" . $row['telefono'] . "'>Editar</button>
+                                    <td class='table-actions'>
+                                        <button class='btn btn-primary btn-sm btn-action edit-btn' data-toggle='modal' data-target='#editPersonModal' data-cedula='" . $row['cedula'] . "' data-nombre='" . $row['nombre'] . "'>Editar</button>
                                         <button class='btn btn-danger btn-sm delete-btn' data-id='" . $row['cedula'] . "'>Eliminar</button>
                                     </td>
                                   </tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='6'>No hay usuarios registrados</td></tr>";
+                        echo "<tr><td colspan='6'>No hay personas registradas</td></tr>";
                     }
                     $conn->close();
                     ?>
@@ -158,10 +165,6 @@ $resultado = $conn->query($consulta);
                         <div class="form-group">
                             <label for="apellido">Apellido</label>
                             <input type="text" class="form-control" id="apellido" name="apellido" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
                         </div>
                         <div class="form-group">
                             <label for="telefono">Teléfono</label>
@@ -200,10 +203,6 @@ $resultado = $conn->query($consulta);
                             <input type="text" class="form-control" id="editApellido" required>
                         </div>
                         <div class="form-group">
-                            <label for="editEmail">Email</label>
-                            <input type="email" class="form-control" id="editEmail" required>
-                        </div>
-                        <div class="form-group">
                             <label for="editTelefono">Teléfono</label>
                             <input type="text" class="form-control" id="editTelefono" required>
                         </div>
@@ -226,14 +225,12 @@ $resultado = $conn->query($consulta);
                 var id = $(this).data('id');
                 var nombre = $(this).data('nombre');
                 var apellido = $(this).data('apellido');
-                var email = $(this).data('email');
                 var telefono = $(this).data('telefono');
 
                 $('#editUserId').val(id);
                 $('#editCedula').val(id);
                 $('#editNombre').val(nombre);
                 $('#editApellido').val(apellido);
-                $('#editEmail').val(email);
                 $('#editTelefono').val(telefono);
             });
 
@@ -259,7 +256,6 @@ $resultado = $conn->query($consulta);
                     cedula: $('#editCedula').val(),
                     nombre: $('#editNombre').val(),
                     apellido: $('#editApellido').val(),
-                    email: $('#editEmail').val(),
                     telefono: $('#editTelefono').val()
                 };
 

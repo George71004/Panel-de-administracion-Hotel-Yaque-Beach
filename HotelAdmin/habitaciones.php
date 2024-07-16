@@ -82,14 +82,23 @@ $resultado = $conn->query($consulta);
             width: 100%;
             padding: 20px;
         }
+        .table-actions {
+            width: 100px; /* Ajusta el ancho según sea necesario */
+            text-align: center;
+        }
+        .btn-action {
+            margin-bottom: 5px; /* Ajusta el margen derecho según sea necesario */
+        }
     </style>
 </head>
 <body>
     <div id="sidebar">
         <h3>Menú</h3>
         <ul class="list-unstyled">
-            <li><a href="usuarios.php"><i class="fas fa-users"></i> <span>Usuarios registrados</span></a></li>
+            <li><a href="usuarios.php"><i class="fas fa-users"></i> <span>Personas</span></a></li>
             <li><a href="habitaciones.php"><i class="fas fa-bed"></i> <span>Habitaciones</span></a></li>
+            <li><a href="personas.php"><i class="fas fa-user"></i> <span>Usuarios</span></a></li>
+            <li><a href="categorias.php"><i class="fas fa-list"></i> <span>Categorías</span></a></li>
         </ul>
     </div>
 
@@ -122,8 +131,8 @@ $resultado = $conn->query($consulta);
                                     <td>" . $row["descripcion"] . "</td>
                                     <td>" . $row["precio"] . "</td>
                                     <td>" . $row["capacidad"] . "</td>
-                                    <td>
-                                        <button class='btn btn-primary btn-sm edit-btn' data-toggle='modal' data-target='#editRoomModal' data-id='" . $row['id_habitacion'] . "' data-numero='" . $row['numero_habitacion'] . "' data-tipo='" . $row['tipo'] . "' data-descripcion='" . $row['descripcion'] . "' data-precio='" . $row['precio'] . "' data-capacidad='" . $row['capacidad'] . "'>Editar</button>
+                                    <td class='table-actions'>
+                                        <button class='btn btn-primary btn-action btn-sm edit-btn' data-toggle='modal' data-target='#editRoomModal' data-id='" . $row['id_habitacion'] . "' data-numero='" . $row['numero_habitacion'] . "' data-tipo='" . $row['tipo'] . "' data-descripcion='" . $row['descripcion'] . "' data-precio='" . $row['precio'] . "' data-capacidad='" . $row['capacidad'] . "'>Editar</button>
                                         <button class='btn btn-danger btn-sm delete-btn' data-id='" . $row['id_habitacion'] . "'>Eliminar</button>
                                     </td>
                                   </tr>";
@@ -278,5 +287,7 @@ $resultado = $conn->query($consulta);
     </script>
 </body>
 </html>
+
+
 
 
