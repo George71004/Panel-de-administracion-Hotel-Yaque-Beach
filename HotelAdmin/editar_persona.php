@@ -11,15 +11,16 @@ if (!$conn) {
 $cedula = $_POST['cedula'];
 $email = $_POST['email'];
 $clave = $_POST['clave'];
+$nivel = $_POST['nivel'];
 
 // Validar que todos los campos estén presentes
-if (empty($cedula) || empty($email) || empty($clave)) {
+if (empty($cedula) || empty($email) || empty($clave) || empty($nivel)) {
     echo "Error: Todos los campos son obligatorios.";
     exit;
 }
 
 // Consulta SQL para actualizar el usuario
-$sql = "UPDATE usuario SET email='$email', clave='$clave' WHERE cedula='$cedula'";
+$sql = "UPDATE usuario SET email='$email', clave='$clave', nivel='$nivel' WHERE cedula='$cedula'";
 
 if (mysqli_query($conn, $sql)) {
     echo "success";

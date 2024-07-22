@@ -1,4 +1,10 @@
 <?php
+//LOGEADO??
+session_start();
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header("Location: index.html");
+    exit;
+}
 $conn = mysqli_connect('localhost', 'root', '', 'hotel_yaquebeach');
 
 // Verificar conexión
@@ -89,6 +95,9 @@ $resultado = $conn->query($consulta);
         .btn-action {
             margin-bottom: 5px; /* Ajusta el margen derecho según sea necesario */
         }
+        .search-bar {
+            float: right;
+        }
     </style>
 </head>
 <body>
@@ -99,12 +108,21 @@ $resultado = $conn->query($consulta);
             <li><a href="habitaciones.php"><i class="fas fa-bed"></i> <span>Habitaciones</span></a></li>
             <li><a href="personas.php"><i class="fas fa-user"></i> <span>Usuarios</span></a></li>
             <li><a href="categorias.php"><i class="fas fa-list"></i> <span>Categorías</span></a></li>
+            <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> <span>Cerrar sesión</span></a></li>
         </ul>
     </div>
 
     <div id="content">
+        <div class="user-info">
+            <i class="fas fa-user"></i>
+            <span><?php echo "Administrador"; ?> (<?php echo $_SESSION['user_email']; ?>)</span>
+        </div>
+
         <div class="container mt-5">
             <h1>Administrar Habitaciones</h1>
+            <div class="search-bar">
+                <input type="text" id="searchInput" class="form-control" placeholder="Buscar...">
+            </div>
             <button class="btn btn-primary my-3" data-toggle="modal" data-target="#createRoomModal">Crear Habitación</button>
             <table class="table table-bordered">
                 <thead>
@@ -118,7 +136,7 @@ $resultado = $conn->query($consulta);
                         <th>Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="habitacionesTableBody">
                 <?php
                 // Mostrar habitaciones
                     if ($resultado->num_rows > 0) {
@@ -132,7 +150,7 @@ $resultado = $conn->query($consulta);
                                     <td>" . $row["precio"] . "</td>
                                     <td>" . $row["capacidad"] . "</td>
                                     <td class='table-actions'>
-                                        <button class='btn btn-primary btn-action btn-sm edit-btn' data-toggle='modal' data-target='#editRoomModal' data-id='" . $row['id_habitacion'] . "' data-numero='" . $row['numero_habitacion'] . "' data-tipo='" . $row['tipo'] . "' data-descripcion='" . $row['descripcion'] . "' data-precio='" . $row['precio'] . "' data-capacidad='" . $row['capacidad'] . "'>Editar</button>
+                                        <button class='btn btn-primary btn-action btn-sm edit-btn' data-toggle='modal' data-target='#editRoomModal' data-id='" . $row['id_habitacion'] . "' data-numero='" . $row['numero_habitacion'] . "' data-categoria='" . $row['tipo'] . "'>Editar</button>
                                         <button class='btn btn-danger btn-sm delete-btn' data-id='" . $row['id_habitacion'] . "'>Eliminar</button>
                                     </td>
                                   </tr>";
@@ -187,7 +205,7 @@ $resultado = $conn->query($consulta);
         </div>
     </div>
 
-    <!-- Modal Editar Habitación -->
+        <!-- Modal Editar Habitación -->
     <div class="modal fade" id="editRoomModal" tabindex="-1" aria-labelledby="editRoomModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -229,65 +247,67 @@ $resultado = $conn->query($consulta);
     </div>
 
     <!-- Enlace a Bootstrap JS y dependencias -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
         $(document).ready(function() {
-            // Evento para mostrar datos en el modal de edición
-            $('.edit-btn').click(function() {
-                var id = $(this).data('id');
-                var numero = $(this).data('numero');
-                var tipo = $(this).data('tipo');
-                var descripcion = $(this).data('descripcion');
-                var precio = $(this).data('precio');
-                var capacidad = $(this).data('capacidad');
+        // Evento para mostrar datos en el modal de edición
+        $('.edit-btn').click(function() {
+            var id = $(this).data('id');
+            var numero = $(this).data('numero');
+            var categoria = $(this).data('categoria');
 
-                $('#editRoomId').val(id);
-                $('#editNumeroHabitacion').val(numero);
-                $('#editCategoria').val(tipo);
-                $('#editDescripcion').val(descripcion);
-                $('#editPrecio').val(precio);
-                $('#editCapacidad').val(capacidad);
-            });
+            $('#editRoomId').val(id);
+            $('#editNumeroHabitacion').val(numero);
+            $('#editCategoria').val(categoria);
+        });
 
-            // Evento para manejar la eliminación de habitación
-            $('.delete-btn').click(function() {
-                var id = $(this).data('id');
-                if (confirm('¿Estás seguro de que deseas eliminar esta habitación?')) {
-                    $.post('eliminar_habitacion.php', { id: id }, function(response) {
-                        if (response == 'success') {
-                            location.reload();
-                        } else {
-                            alert('Error al eliminar habitación.');
-                        }
-                    });
-                }
-            });
-
-            // Evento para enviar el formulario de edición
-            $('#editRoomForm').submit(function(e) {
-                e.preventDefault();
-                var formData = {
-                    id: $('#editRoomId').val(),
-                    numero_habitacion: $('#editNumeroHabitacion').val(),
-                    categoria: $('#editCategoria').val()
-                };
-
-                $.post('editar_habitacion.php', formData, function(response) {
+        // Evento para manejar la eliminación de habitación
+        $('.delete-btn').click(function() {
+            var id = $(this).data('id');
+            if (confirm('¿Estás seguro de que deseas eliminar esta habitación?')) {
+                $.post('eliminar_habitacion.php', { id: id }, function(response) {
                     if (response == 'success') {
                         location.reload();
                     } else {
-                        alert('Error al editar habitación.');
+                        alert('Habitación eliminada correctamente.');
+                        location.reload();
                     }
                 });
+            }
+        });
+
+        // Evento para enviar el formulario de edición
+        $('#editRoomForm').submit(function(e) {
+            e.preventDefault();
+            var formData = {
+                id: $('#editRoomId').val(),
+                numero_habitacion: $('#editNumeroHabitacion').val(),
+                categoria: $('#editCategoria').val()
+            };
+
+            $.post('editar_habitacion.php', formData, function(response) {
+                console.log("Respuesta del servidor: ", response);  // Mostrar la respuesta completa en la consola
+                if (response.trim() == 'success') {
+                    location.reload();
+                } else {
+                    alert('Error al editar habitación: ' + response);
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                alert('Error de conexión: ' + textStatus + ' - ' + errorThrown);
+                console.log('Detalles del error: ', jqXHR);
             });
         });
+        // Evento para buscar en la tabla
+        $('#searchInput').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('#habitacionesTableBody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+    });
     </script>
 </body>
 </html>
-
-
-
-

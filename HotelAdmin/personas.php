@@ -1,4 +1,10 @@
 <?php
+//LOGEADO??
+session_start();
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header("Location: index.html");
+    exit;
+}
 
 $conn = mysqli_connect('localhost', 'root', '', 'hotel_yaquebeach');
 
@@ -8,7 +14,7 @@ if (!$conn) {
 }
 
 // Consulta SQL para obtener todos los usuarios
-$consulta = "SELECT cedula, email, clave FROM usuario";
+$consulta = "SELECT cedula, email, clave, nivel FROM usuario";
 $resultado = $conn->query($consulta);
 ?>
 
@@ -85,6 +91,10 @@ $resultado = $conn->query($consulta);
             width: 100px; /* Ajusta el ancho según sea necesario */
             text-align: center;
         }
+        .search-bar {
+            float: right;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -95,21 +105,36 @@ $resultado = $conn->query($consulta);
             <li><a href="habitaciones.php"><i class="fas fa-bed"></i> <span>Habitaciones</span></a></li>
             <li><a href="personas.php"><i class="fas fa-user"></i> <span>Usuarios</span></a></li>
             <li><a href="categorias.php"><i class="fas fa-list"></i> <span>Categorías</span></a></li>
+            <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> <span>Cerrar sesión</span></a></li>
         </ul>
     </div>
+
+    <div id="content">
+        <div class="user-info">
+            <i class="fas fa-user"></i>
+            <span><?php echo "Administrador"; ?> (<?php echo $_SESSION['user_email']; ?>)</span>
+        </div>
+        
     <div class="container mt-5">
         <h1>Administrar Usuarios</h1>
         <p>La eliminacion de usuarios se lleva a cabo en la opcion "Personas".</p>
+        <p>Para otorgar el nivel de Administrador se coloca el nivel en "1", para revocar "00".</p>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar...">
+        </div>
+
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Cédula</th>
                     <th>Email</th>
                     <th>Clave</th>
+                    <th>Nivel</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="usuariosTableBody">
             <?php
             // Mostrar usuarios
             if ($resultado->num_rows > 0) {
@@ -119,6 +144,7 @@ $resultado = $conn->query($consulta);
                             <td>" . $row["cedula"] . "</td>
                             <td>" . $row["email"] . "</td>
                             <td>" . $row["clave"] . "</td>
+                            <td>" . $row["nivel"] . "</td>
                             <td class='table-actions'>
                                 <button class='btn btn-primary btn-sm edit-btn' data-toggle='modal' data-target='#editUserModal' data-cedula='" . $row['cedula'] . "' data-email='" . $row['email'] . "' data-clave='" . $row['clave'] . "'>Editar</button>
                             </td>
@@ -154,6 +180,10 @@ $resultado = $conn->query($consulta);
                             <label for="editClave">Clave</label>
                             <input type="password" class="form-control" id="editClave" name="clave" required>
                         </div>
+                        <div class="form-group">
+                            <label for="editNivel">Nivel</label>
+                            <input type="level" class="form-control" id="editNivel" name="nivel" required>
+                        </div>
                         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                     </form>
                 </div>
@@ -172,11 +202,13 @@ $resultado = $conn->query($consulta);
             var cedula = button.data('cedula');
             var email = button.data('email');
             var clave = button.data('clave');
+            var nivel = button.data('nivel');
 
             var modal = $(this);
             modal.find('#editCedula').val(cedula);
             modal.find('#editEmail').val(email);
             modal.find('#editClave').val(clave);
+            modal.find('#editNivel').val(nivel);
         });
 
         // Script para manejar el formulario de edición y enviar datos al servidor
@@ -185,7 +217,8 @@ $resultado = $conn->query($consulta);
             var formData = {
                 cedula: $('#editCedula').val(),
                 email: $('#editEmail').val(),
-                clave: $('#editClave').val()
+                clave: $('#editClave').val(),
+                nivel: $('#editNivel').val()
             };
 
             $.ajax({
@@ -203,6 +236,13 @@ $resultado = $conn->query($consulta);
                 }
             });
         });
+            // Evento para buscar en la tabla
+            $('#searchInput').on('keyup', function() {
+                    var value = $(this).val().toLowerCase();
+                    $('#usuariosTableBody tr').filter(function() {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    });
+                });
     </script>
 </body>
 </html>

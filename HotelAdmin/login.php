@@ -22,13 +22,16 @@ if ($resultado->num_rows > 0) {
     // Verificar la contraseña en texto plano
     if ($clave == $row['clave']) {
         // Contraseña correcta, iniciar sesión
+        $_SESSION['loggedin'] = true;
         $_SESSION['user_id'] = $row['cedula'];
         $_SESSION['user_email'] = $row['email'];
-        header("Location: panel.html");
+
+        header("Location: panel.php");
         exit();
+    
     } else {
         // Contraseña incorrecta
-        echo "Contraseña incorrecta";
+        echo "Correo electrónico o contraseña incorrectos.";
     }
 } else {
     // Usuario no encontrado

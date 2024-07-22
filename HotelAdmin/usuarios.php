@@ -1,4 +1,10 @@
 <?php
+//LOGEADO??
+session_start();
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header("Location: index.html");
+    exit;
+}
 //ESTE ARCHIVO SERA UTILIZADO COMO LA TABLA DE PERSONAS
 $conn = mysqli_connect('localhost', 'root', '', 'hotel_yaquebeach');
 
@@ -88,6 +94,9 @@ $resultado = $conn->query($consulta);
         .btn-action {
             margin-bottom: 5px; /* Ajusta el margen derecho según sea necesario */
         }
+        .search-bar {
+            float: right;
+        }
     </style>
 </head>
 <body>
@@ -98,12 +107,22 @@ $resultado = $conn->query($consulta);
             <li><a href="habitaciones.php"><i class="fas fa-bed"></i> <span>Habitaciones</span></a></li>
             <li><a href="personas.php"><i class="fas fa-user"></i> <span>Usuarios</span></a></li>
             <li><a href="categorias.php"><i class="fas fa-list"></i> <span>Categorías</span></a></li>
+            <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> <span>Cerrar sesión</span></a></li>
         </ul>
     </div>
 
     <div id="content">
+        <div class="user-info">
+            <i class="fas fa-user"></i>
+            <span><?php echo "Administrador"; ?> (<?php echo $_SESSION['user_email']; ?>)</span>
+        </div>
+
+    <div id="content">
         <div class="container mt-5">
             <h1>Administrar Personas</h1>
+            <div class="search-bar">
+                <input type="text" id="searchInput" class="form-control" placeholder="Buscar...">
+            </div>
             <button class="btn btn-primary my-3" data-toggle="modal" data-target="#createUserModal">Crear Persona</button>
             <table class="table table-bordered">
                 <thead>
@@ -115,7 +134,7 @@ $resultado = $conn->query($consulta);
                         <th>Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="personasTableBody">
                 <?php
                 //Mostrar usuarios
                     if ($resultado->num_rows > 0) {
@@ -268,6 +287,13 @@ $resultado = $conn->query($consulta);
                 });
             });
         });
+         // Evento para buscar en la tabla
+         $('#searchInput').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('#personasTableBody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
     </script>
 </body>
 </html>
