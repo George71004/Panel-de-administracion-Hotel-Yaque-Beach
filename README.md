@@ -2,3 +2,6 @@
 Panel de administrador para operadores del Hotel Yaque Beach
 
 Proyecto universitario con fines educativos.
+
+Proyecto: HotelAdmin
+Tablas: hotel_yaquebeach
