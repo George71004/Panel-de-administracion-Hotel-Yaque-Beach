@@ -12,15 +12,16 @@ if(!$conn){
 // Recibir datos del formulario
 $email = $_POST['email'];
 $clave = $_POST['clave'];
+$nivel = '1';
 
 // Consulta SQL para verificar el usuario
-$sql = "SELECT cedula, email, clave FROM usuario WHERE email = '$email'";
+$sql = "SELECT cedula, email, clave, nivel FROM usuario WHERE email = '$email'";
 $resultado = $conn->query($sql);
 
 if ($resultado->num_rows > 0) {
     $row = $resultado->fetch_assoc();
     // Verificar la contraseña en texto plano
-    if ($clave == $row['clave']) {
+    if ($clave == $row['clave'] && $nivel == $row['nivel']) {
         // Contraseña correcta, iniciar sesión
         $_SESSION['loggedin'] = true;
         $_SESSION['user_id'] = $row['cedula'];
@@ -31,11 +32,11 @@ if ($resultado->num_rows > 0) {
     
     } else {
         // Contraseña incorrecta
-        echo "Correo electrónico o contraseña incorrectos.";
+        echo "Clave incorrecta o nivel no permitido.";
     }
 } else {
     // Usuario no encontrado
-    echo "Usuario no encontrado";
+    echo "Su usuario no ha sido encontrado. Verifique si el correo esta escrito correctamente.";
 }
 
 $conn->close();
