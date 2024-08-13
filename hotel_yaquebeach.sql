@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-08-2024 a las 20:15:26
+-- Tiempo de generación: 13-08-2024 a las 18:30:44
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -69,7 +69,7 @@ INSERT INTO `habitacion` (`id_habitacion`, `numero_habitacion`, `categoria`, `de
 (22, '111', 6, NULL, NULL, NULL, NULL),
 (25, '123', 9, NULL, NULL, NULL, NULL),
 (26, '222', 5, NULL, NULL, NULL, NULL),
-(27, '446', 4, NULL, NULL, NULL, NULL);
+(27, '449944', 9, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -81,6 +81,7 @@ CREATE TABLE `persona` (
   `cedula` varchar(150) NOT NULL,
   `nombre` varchar(150) NOT NULL,
   `apellido` varchar(150) NOT NULL,
+  `email` varchar(30) NOT NULL,
   `telefono` varchar(150) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
@@ -88,9 +89,11 @@ CREATE TABLE `persona` (
 -- Volcado de datos para la tabla `persona`
 --
 
-INSERT INTO `persona` (`cedula`, `nombre`, `apellido`, `telefono`) VALUES
-('11223344', 'Kiln', 'Ra', '626262626'),
-('30547460', 'Jorge', 'Garcia', '04241234588');
+INSERT INTO `persona` (`cedula`, `nombre`, `apellido`, `email`, `telefono`) VALUES
+('14254777', 'Jhon', 'Smith', '0', '6677868787'),
+('3054545', 'Juan', 'Sanzhce', '0', '11555464'),
+('30547460', 'Jorge', 'Garcia', '0', '04241234588'),
+('77766867', 'Jose', 'Silva', '0', '1548451545');
 
 --
 -- Disparadores `persona`
@@ -120,7 +123,6 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`cedula`, `email`, `clave`, `nivel`) VALUES
-('11223344', 'juan@juan', '123321', 0),
 ('30547460', 'admin@admin', 'admin', 1);
 
 --
@@ -168,7 +170,7 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `habitacion`
 --
 ALTER TABLE `habitacion`
-  MODIFY `id_habitacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id_habitacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- Restricciones para tablas volcadas
